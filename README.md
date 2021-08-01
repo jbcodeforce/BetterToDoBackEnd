@@ -1,4 +1,6 @@
-# Better To Do App
+# Better To Do App Back end
+
+This is the back end to manage meeting and to do.
 
 ## Dependencies
 
@@ -8,11 +10,30 @@
 docker run -d --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name pgdb -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=passw0rd -e POSTGRES_DB=bettertodo -p 5432:5432 postgres:10.5
 ```
 
+or use `docker compose up -d` to start also a pgadmin client, then point to http://localhost:8082/ and use admin@mail.com as user.
+
+* To deploy postgres on OCP
+
+```shell
+oc create serviceaccount postgres-sa
+oc adm policy add-scc-to-user anyuid -n jbsandbox -z postgres-sa
+```
+
+The oc adm command is required only if targeting an OpenShift cluster).
+
+Deploy the postgres container and service:
+
+```shell
+oc apply -f src/main/kubernetes/secret.yaml
+oc apply -f src/main/kubernetes/deployment-postgres.yaml 
+```
+
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
+
 ```shell script
-./mvnw compile quarkus:dev
+./mvnw quarkus:dev
 ```
 
 ## Packaging and running the application

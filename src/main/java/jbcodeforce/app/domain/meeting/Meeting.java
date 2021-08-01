@@ -3,9 +3,11 @@ package jbcodeforce.app.domain.meeting;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
@@ -13,17 +15,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jbcodeforce.app.domain.ToDo;
 
 
 @Entity
 @Table(name = "meetings")
-@NamedQuery(name = "Meetings.findAll", query = "SELECT m FROM Meeting m ORDER BY m.title")
-public class Meeting {
+@Cacheable
+@NamedQuery(name = "Meetings.findAll", query = "SELECT m FROM Meeting m ORDER BY m.customer")
+public class Meeting  extends PanacheEntityBase{
     @Id
     @SequenceGenerator(name = "meetingsSequence", sequenceName = "meetings_id_seq", allocationSize = 1, initialValue = 10)
     @GeneratedValue(generator = "meetingsSequence")
-    public Integer id;
+    public Long id;
     @Column(length = 50, unique = true)
     public String title;
     public LocalDate creationDate;
@@ -34,13 +38,13 @@ public class Meeting {
     public String context;
     @Column(length = 50)
     public String customer;
-    @OneToMany(targetEntity=jbcodeforce.app.domain.ToDo.class, mappedBy="meeting", cascade=CascadeType.ALL)
+    @OneToMany(targetEntity=jbcodeforce.app.domain.ToDo.class, mappedBy="meeting", fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     public List<ToDo> todos;
     public Boolean active=true;
 
     public Meeting(){}
 
-    public Meeting(Integer id,String t){
+    public Meeting(Long id,String t){
         this.id = id;
         this.title = t;
     }

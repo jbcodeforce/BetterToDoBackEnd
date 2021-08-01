@@ -1,0 +1,21 @@
+version: '3'
+services:
+  postgresql:
+    image: "postgres" 
+    hostname: postgresql
+    container_name: postgres
+    ports:
+        - 5432:5432
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: passw0rd
+      POSTGRES_DB: bettertodo 
+    volumes:
+      - ./data:/var/lib/postgresql/data/
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 8082:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.com
+      PGADMIN_DEFAULT_PASSWORD: alongpassw0rd 

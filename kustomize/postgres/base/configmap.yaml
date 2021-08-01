@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-cm
+data:
+  POSTGRES_DB: "tododb"
+  POSTGRESQL_ENABLE_LDAP: "no"

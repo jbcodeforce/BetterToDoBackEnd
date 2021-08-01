@@ -3,27 +3,24 @@ package jbcodeforce.app.domain.meeting;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import org.hibernate.reactive.mutiny.Mutiny;
-
+import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
 import jbcodeforce.app.domain.ToDo;
 
 @ApplicationScoped
 public class MeetingService {
     
-
-    @Inject
-    Mutiny.Session mutinySession;
-
+   
+    
     public Uni<List<Meeting>> getAll() {
-        return mutinySession
-                .createNamedQuery( "Meetings.findAll", Meeting.class ).getResults().collectItems().asList();
+        return Meeting
+                .listAll(Sort.by("customer"));
     }
 
-    public Uni<Meeting> getSingle(Integer id) {
-        return mutinySession.find(Meeting.class, id);
+    public Uni<Meeting> getSingle(Long id) {
+        return Meeting.findById(id);
     }
 
     public Uni<Meeting> create(Meeting meeting) {
@@ -33,8 +30,7 @@ public class MeetingService {
             }
         
         }
-        return  mutinySession.persist(meeting).chain(mutinySession::flush)
-                .onItem().transform(ignore -> meeting);
+        return  Panache.withTransaction(meeting::persist);
     }
     
 }

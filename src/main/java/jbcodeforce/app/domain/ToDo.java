@@ -10,16 +10,18 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jbcodeforce.app.domain.meeting.Meeting;
 
 @Entity
 @Table(name = "todos")
 //@NamedQuery(name = "Todos.findAll", query = "SELECT m FROM Todo m ORDER BY m.meetingId")
-public class ToDo {
+public class ToDo extends PanacheEntityBase{
+    
     @Id
     @SequenceGenerator(name = "todosSequence", sequenceName = "todos_id_seq", allocationSize = 1, initialValue = 10)
     @GeneratedValue(generator = "todosSequence")
-    public Integer id;
+    public Long id;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="meetingId", nullable=true)
